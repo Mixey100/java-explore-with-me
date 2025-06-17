@@ -35,17 +35,17 @@ public class StatsServiceImpl implements StatsService {
             throw new ValidationException("Начальная дата не может быть позже конечной");
         }
         List<ViewStatsProjection> result;
-        if (uris != null || !uris.isEmpty()) {
-            if (unique) {
-                result = statsRepository.findAllWithUrisAndUnique(start, end, uris);
+        if (uris == null || uris.isEmpty()) {
+            if (!unique) {
+                result = statsRepository.findAllNotUrisAndNotUnique(start, end);
             } else {
-                result = statsRepository.findAllWithUrisAndNotUnique(start, end, uris);
+                result = statsRepository.findAllNotUrisAndUnique(start, end);
             }
         } else {
-            if (unique) {
-                result = statsRepository.findAllNotUrisAndUnique(start, end);
+            if (!unique) {
+                result = statsRepository.findAllWithUrisAndNotUnique(start, end, uris);
             } else {
-                result = statsRepository.findAllNotUrisAndNotUnique(start, end);
+                result = statsRepository.findAllWithUrisAndUnique(start, end, uris);
             }
         }
         return result.stream()
