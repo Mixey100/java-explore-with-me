@@ -22,25 +22,25 @@ services:
     depends_on:
       - stats-db
 
-  main-db:
+  ewm-db:
     image: postgres:15-alpine
-    container_name: main-db
+    container_name: ewm-db
     ports:
       - "5433:5432"
     environment:
-      - POSTGRES_PASSWORD=main
-      - POSTGRES_USER=main
-      - POSTGRES_DB=main
+      - POSTGRES_PASSWORD=ewm
+      - POSTGRES_USER=ewm
+      - POSTGRES_DB=ewm
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U main -d main"]
       timeout: 5s
       interval: 5s
       retries: 10
 
-  main-service:
-    build: main-service
+  ewm-service:
+    build: ewm-service
     container_name: main-service
     ports:
       - "8080:8080"
     depends_on:
-     - main-db
+     - ewm-db
