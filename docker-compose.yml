@@ -1,6 +1,6 @@
 services:
   stats-db:
-    image: postgres:15-alpine
+    image: postgres:17-alpine
     container_name: stats-db
     ports:
       - "5432:5432"
@@ -23,7 +23,7 @@ services:
       - stats-db
 
   ewm-db:
-    image: postgres:15-alpine
+    image: postgres:17-alpine
     container_name: ewm-db
     ports:
       - "5433:5432"
@@ -32,14 +32,14 @@ services:
       - POSTGRES_USER=ewm
       - POSTGRES_DB=ewm
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U main -d main"]
+      test: ["CMD-SHELL", "pg_isready -U ewm -d ewm"]
       timeout: 5s
       interval: 5s
       retries: 10
 
   ewm-service:
     build: ewm-service
-    container_name: main-service
+    container_name: ewm-service
     ports:
       - "8080:8080"
     depends_on:

@@ -5,5 +5,5 @@ CREATE TABLE IF NOT EXISTS endpoint_hits (
     app VARCHAR NOT NULL,
     uri VARCHAR NOT NULL,
     ip VARCHAR NOT NULL,
-    tamestamp DATE NOT NULL
+    timestamp DATE NOT NULL
 );

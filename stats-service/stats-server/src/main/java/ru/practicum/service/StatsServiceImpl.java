@@ -23,6 +23,7 @@ public class StatsServiceImpl implements StatsService {
     private final StatsRepository statsRepository;
 
     @Override
+    @Transactional
     public void create(EndpointHitDtoRequest dtoRequest) {
         log.info("Сохранение статистики");
         statsRepository.save(EndpointMapper.mapToEntity(dtoRequest));

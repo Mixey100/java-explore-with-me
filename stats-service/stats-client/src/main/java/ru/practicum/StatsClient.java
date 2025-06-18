@@ -1,16 +1,16 @@
 package ru.practicum;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Service
+@RequiredArgsConstructor
 public class StatsClient {
 
     private final RestTemplate restTemplate;
@@ -46,4 +46,5 @@ public class StatsClient {
         restTemplate.exchange(uri, HttpMethod.POST, entity, Void.class);
     }
 }
+
 
