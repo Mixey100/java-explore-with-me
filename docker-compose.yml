@@ -1,14 +1,46 @@
 services:
+  stats-db:
+    image: postgres:17-alpine
+    container_name: stats-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=stats
+      - POSTGRES_USER=stats
+      - POSTGRES_DB=stats
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U stats -d stats"]
+      timeout: 5s
+      interval: 5s
+      retries: 10
+
   stats-server:
+    build: stats-service/stats-server
+    container_name: stats-server
     ports:
       - "9090:9090"
-
-  stats-db:
-    image: postgres:16.1
-
-  ewm-service:
-    ports:
-      - "8080:8080"
+    depends_on:
+      - stats-db
 
   ewm-db:
-    image: postgres:16.1
+    image: postgres:17-alpine
+    container_name: ewm-db
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_PASSWORD=ewm
+      - POSTGRES_USER=ewm
+      - POSTGRES_DB=ewm
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ewm -d ewm"]
+      timeout: 5s
+      interval: 5s
+      retries: 10
+
+  ewm-service:
+    build: ewm-service
+    container_name: ewm-service
+    ports:
+      - "8080:8080"
+    depends_on:
+     - ewm-db
