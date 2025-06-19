@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.EndpointHitDtoRequest;
+import ru.practicum.StatsRequest;
 import ru.practicum.ViewStatsDto;
 import ru.practicum.service.StatsService;
 
@@ -27,6 +28,12 @@ public class StatsController {
                                        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime end,
                                        @RequestParam(required = false) List<String> uris,
                                        @RequestParam(required = false, defaultValue = "false") Boolean unique) {
-        return statsService.getStats(start, end, uris, unique);
+        StatsRequest request = StatsRequest.builder()
+                .start(start)
+                .end(end)
+                .uris(uris)
+                .unique(unique)
+                .build();
+        return statsService.getStats(request);
     }
 }

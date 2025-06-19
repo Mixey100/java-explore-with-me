@@ -5,13 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.EndpointHitDtoRequest;
+import ru.practicum.StatsRequest;
 import ru.practicum.ViewStatsDto;
 import ru.practicum.ViewStatsProjection;
 import ru.practicum.exception.ValidationException;
 import ru.practicum.mapper.EndpointMapper;
 import ru.practicum.storage.StatsRepository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -30,23 +30,29 @@ public class StatsServiceImpl implements StatsService {
     }
 
     @Override
-    public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+    public List<ViewStatsDto> getStats(StatsRequest request) {
         log.info("Получение статистики");
-        if (start.isAfter(end)) {
+        if (request == null) {
+            throw new ValidationException("StatsRequest не должен быть null");
+        }
+        if (request.getStart() == null || request.getEnd() == null) {
+            throw new ValidationException("Начальная дата и конечная дата обязательны");
+        }
+        if (request.getStart().isAfter(request.getEnd())) {
             throw new ValidationException("Начальная дата не может быть позже конечной");
         }
         List<ViewStatsProjection> result;
-        if (uris == null || uris.isEmpty()) {
-            if (!unique) {
-                result = statsRepository.findAllNotUrisAndNotUnique(start, end);
+        if (request.getUris() == null || request.getUris().isEmpty()) {
+            if (!request.getUnique()) {
+                result = statsRepository.findAllNotUrisAndNotUnique(request.getStart(), request.getEnd());
             } else {
-                result = statsRepository.findAllNotUrisAndUnique(start, end);
+                result = statsRepository.findAllNotUrisAndUnique(request.getStart(), request.getEnd());
             }
         } else {
-            if (!unique) {
-                result = statsRepository.findAllWithUrisAndNotUnique(start, end, uris);
+            if (!request.getUnique()) {
+                result = statsRepository.findAllWithUrisAndNotUnique(request.getStart(), request.getEnd(), request.getUris());
             } else {
-                result = statsRepository.findAllWithUrisAndUnique(start, end, uris);
+                result = statsRepository.findAllWithUrisAndUnique(request.getStart(), request.getEnd(), request.getUris());
             }
         }
         return result.stream()
