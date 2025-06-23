@@ -26,7 +26,7 @@ services:
     image: postgres:17-alpine
     container_name: ewm-db
     ports:
-      - "5433:5432"
+      - "6432:5432"
     environment:
       - POSTGRES_PASSWORD=ewm
       - POSTGRES_USER=ewm
@@ -44,3 +44,5 @@ services:
       - "8080:8080"
     depends_on:
      - ewm-db
+    volumes:
+      - ./ewm-service/src/main/resources/schema.sql:/app/resources/schema.sql
