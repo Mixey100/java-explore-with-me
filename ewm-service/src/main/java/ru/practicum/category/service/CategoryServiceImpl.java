@@ -10,8 +10,10 @@ import ru.practicum.category.dto.NewCategoryDto;
 import ru.practicum.category.mapper.CategoryMapper;
 import ru.practicum.category.model.Category;
 import ru.practicum.category.repository.CategoryRepository;
+import ru.practicum.event.repository.EventRepository;
 import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
+import ru.practicum.exception.ValidationException;
 
 import java.util.List;
 
@@ -21,6 +23,7 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final EventRepository eventRepository;
 
     @Override
     public CategoryDto createCategory(NewCategoryDto categoryDto) {
@@ -29,6 +32,7 @@ public class CategoryServiceImpl implements CategoryService {
             throw new ConflictException("Такая категория уже существует");
         }
         Category category = categoryRepository.save(CategoryMapper.mapToCategory(categoryDto));
+        log.info("Создана категория  с id = {} ", category.getId());
         return CategoryMapper.mapToCategoryDto(category);
     }
 
@@ -52,11 +56,17 @@ public class CategoryServiceImpl implements CategoryService {
         if (!categoryRepository.existsById(categoryId)) {
             throw new NotFoundException("Категория с id = " + categoryId + " не найдена");
         }
+        if (eventRepository.existsByCategoryId(categoryId)) {
+            throw new ConflictException("Попытка удалить категорию с привязанными событиями");
+        }
         categoryRepository.deleteById(categoryId);
     }
 
     @Override
     public List<CategoryDto> getCategories(Integer from, Integer size) {
+        if (from < 0 || size <= 0) {
+            throw new ValidationException("Некорректные параметры пагинации");
+        }
         Pageable pageable = PageRequest.of(from / size, size);
         List<Category> categories = categoryRepository.findAll(pageable).getContent();
         return categories.stream()
