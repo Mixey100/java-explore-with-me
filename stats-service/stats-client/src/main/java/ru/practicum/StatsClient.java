@@ -1,10 +1,11 @@
 package ru.practicum;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -14,12 +15,13 @@ import java.util.Collections;
 import java.util.List;
 
 @Slf4j
-@RequiredArgsConstructor
+@Service
 public class StatsClient {
 
     private final RestTemplate restTemplate;
     private final String serverUrl;
 
+    @Autowired
     public StatsClient(@Value("${stats-server.url}") String serverUrl, RestTemplate rest) {
         this.restTemplate = rest;
         this.serverUrl = serverUrl;
@@ -36,7 +38,6 @@ public class StatsClient {
                     .queryParam("start", request.getStart())
                     .queryParam("end", request.getEnd())
                     .queryParam("unique", request.getUnique());
-
             if (request.getUris() != null && !request.getUris().isEmpty()) {
                 builder.queryParam("uris", String.join(",", request.getUris()));
             }
