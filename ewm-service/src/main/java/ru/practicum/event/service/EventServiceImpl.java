@@ -37,6 +37,7 @@ import ru.practicum.user.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -117,6 +118,7 @@ public class EventServiceImpl implements EventService {
         log.info("Cписок eventsIds = {}", events.stream().map(Event::getId).toList());
         return events.stream()
                 .map(EventMapper::mapToEventFullDto)
+                .sorted(Comparator.comparingLong(EventFullDto::getId).reversed())
                 .toList();
     }
 
