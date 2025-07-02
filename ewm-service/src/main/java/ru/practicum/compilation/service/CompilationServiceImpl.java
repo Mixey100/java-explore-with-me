@@ -1,7 +1,6 @@
 package ru.practicum.compilation.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,12 +13,10 @@ import ru.practicum.compilation.repository.CompilationRepository;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.repository.EventRepository;
 import ru.practicum.exception.NotFoundException;
-import ru.practicum.exception.ValidationException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CompilationServiceImpl implements CompilationService {
@@ -28,10 +25,7 @@ public class CompilationServiceImpl implements CompilationService {
     private final EventRepository eventRepository;
 
     @Override
-    public List<CompilationDto> getCompilations(Boolean pinned, Integer from, Integer size) {
-        if (from < 0 || size <= 0) {
-            throw new ValidationException("Некорректные параметры пагинации");
-        }
+    public List<CompilationDto> getAll(Boolean pinned, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from / size, size);
         List<Compilation> compilations = compilationRepository.findAllByPinned(pinned, pageable).getContent();
         return compilations.stream()
@@ -40,15 +34,14 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
-    public CompilationDto getCompilationById(Long compId) {
+    public CompilationDto getById(Long compId) {
         Compilation compilation = compilationRepository.findById(compId).orElseThrow(() ->
-                new NotFoundException("Подборка событий с id = " + compId + " не найдена"));
+                new NotFoundException("Подборка событий с id = %d не найдена".formatted(compId)));
         return CompilationMapper.mapToCompilationDto(compilation);
     }
 
     @Override
-    public CompilationDto createCompilation(NewCompilationDto compilationDto) {
-        log.info("Запрос на создание подборки событий");
+    public CompilationDto create(NewCompilationDto compilationDto) {
         if (compilationDto.getEvents() == null) {
             compilationDto.setEvents(new ArrayList<>());
         }
@@ -58,10 +51,9 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
-    public CompilationDto updateCompilation(UpdateCompilationDto compilationDto, Long compId) {
-        log.info("Запрос на обновление подборки событий id = {}", compId);
+    public CompilationDto update(UpdateCompilationDto compilationDto, Long compId) {
         Compilation compilation = compilationRepository.findById(compId).orElseThrow(() ->
-                new NotFoundException("Подборка событий с id = " + compId + " не найдена"));
+                new NotFoundException("Подборка событий с id = %d не найдена".formatted(compId)));
         if (compilationDto.getEvents() == null) {
             compilationDto.setEvents(new ArrayList<>());
         }
@@ -77,10 +69,9 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
-    public void deleteCompilation(Long compId) {
-        log.info("Запрос на удаление подборки событий с id {}", compId);
+    public void delete(Long compId) {
         if (!compilationRepository.existsById(compId)) {
-            throw new NotFoundException("Подборка событий с id = " + compId + " не найдена");
+            throw new NotFoundException("Подборка событий с id = %d не найдена".formatted(compId));
         }
         compilationRepository.deleteById(compId);
     }

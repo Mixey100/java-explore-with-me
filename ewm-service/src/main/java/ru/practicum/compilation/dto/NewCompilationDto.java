@@ -7,7 +7,6 @@ import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
-@Builder
 @Getter
 @Setter
 @AllArgsConstructor

@@ -7,7 +7,6 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.event.model.StateAction;
 
-@Builder
 @Getter
 @Setter
 @AllArgsConstructor

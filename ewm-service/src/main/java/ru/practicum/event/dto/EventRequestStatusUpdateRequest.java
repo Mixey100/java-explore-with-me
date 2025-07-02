@@ -6,7 +6,6 @@ import ru.practicum.request.model.RequestStatus;
 
 import java.util.List;
 
-@Builder
 @Getter
 @Setter
 @AllArgsConstructor

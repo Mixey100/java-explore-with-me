@@ -1,7 +1,6 @@
 package ru.practicum.category.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -13,11 +12,9 @@ import ru.practicum.category.repository.CategoryRepository;
 import ru.practicum.event.repository.EventRepository;
 import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
-import ru.practicum.exception.ValidationException;
 
 import java.util.List;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
@@ -26,24 +23,21 @@ public class CategoryServiceImpl implements CategoryService {
     private final EventRepository eventRepository;
 
     @Override
-    public CategoryDto createCategory(NewCategoryDto categoryDto) {
-        log.info("Запрос на создание категории name {}", categoryDto.getName());
+    public CategoryDto create(NewCategoryDto categoryDto) {
         if (categoryRepository.existsByName(categoryDto.getName())) {
-            throw new ConflictException("Такая категория уже существует");
+            throw new ConflictException("Категория %s уже существует".formatted(categoryDto.getName()));
         }
         Category category = categoryRepository.save(CategoryMapper.mapToCategory(categoryDto));
-        log.info("Создана категория  с id = {} ", category.getId());
         return CategoryMapper.mapToCategoryDto(category);
     }
 
     @Override
-    public CategoryDto updateCategory(NewCategoryDto categoryDto, Long categoryId) {
-        log.info("Запрос на изменение категории с id = {}", categoryId);
+    public CategoryDto update(NewCategoryDto categoryDto, Long categoryId) {
         Category existingCategory = categoryRepository.findById(categoryId).orElseThrow(() ->
-                new NotFoundException("Категория с id = " + categoryId + " не найдена"));
+                new NotFoundException("Категория id = %d не найдена".formatted(categoryId)));
         if (!existingCategory.getName().equals(categoryDto.getName())) {
             categoryRepository.findByName(categoryDto.getName()).ifPresent(c -> {
-                throw new ConflictException("Такая категория уже существует");
+                throw new ConflictException("Категория  %s уже существует".formatted(categoryDto.getName()));
             });
         }
         existingCategory.setName(categoryDto.getName());
@@ -51,10 +45,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void deleteCategory(Long categoryId) {
-        log.info("Запрос на удаление категории с id = {}", categoryId);
+    public void delete(Long categoryId) {
         if (!categoryRepository.existsById(categoryId)) {
-            throw new NotFoundException("Категория с id = " + categoryId + " не найдена");
+            throw new NotFoundException("Категория id = %d не найдена".formatted(categoryId));
         }
         if (eventRepository.existsByCategoryId(categoryId)) {
             throw new ConflictException("Попытка удалить категорию с привязанными событиями");
@@ -63,10 +56,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryDto> getCategories(Integer from, Integer size) {
-        if (from < 0 || size <= 0) {
-            throw new ValidationException("Некорректные параметры пагинации");
-        }
+    public List<CategoryDto> getAll(Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from / size, size);
         List<Category> categories = categoryRepository.findAll(pageable).getContent();
         return categories.stream()
@@ -75,9 +65,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDto getCategoryById(Long categoryId) {
+    public CategoryDto getById(Long categoryId) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(() ->
-                new NotFoundException("Категория с id = " + categoryId + " не найдена"));
+                new NotFoundException("Категория id = %d не найдена".formatted(categoryId)));
         return CategoryMapper.mapToCategoryDto(category);
     }
 }

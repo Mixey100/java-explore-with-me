@@ -6,7 +6,6 @@ import ru.practicum.request.dto.ParticipationRequestDto;
 
 import java.util.List;
 
-@Builder
 @Getter
 @Setter
 @AllArgsConstructor

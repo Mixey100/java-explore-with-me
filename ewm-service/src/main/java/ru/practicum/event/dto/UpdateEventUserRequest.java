@@ -8,7 +8,6 @@ import lombok.experimental.FieldDefaults;
 import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.event.model.StateAction;
 
-@Builder
 @Getter
 @Setter
 @AllArgsConstructor

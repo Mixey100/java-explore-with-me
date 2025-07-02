@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface RequestService {
 
-    List<ParticipationRequestDto> getRequestsByRequesterId(Long requesterId);
+    List<ParticipationRequestDto> getByRequesterId(Long requesterId);
 
-    ParticipationRequestDto createRequest(Long requesterId, Long eventId);
+    ParticipationRequestDto create(Long requesterId, Long eventId);
 
-    ParticipationRequestDto updateRequest(Long requesterId, Long requestId);
+    ParticipationRequestDto update(Long requesterId, Long requestId);
 }
