@@ -1,6 +1,8 @@
 package ru.practicum.comment.service;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import ru.practicum.comment.dto.CommentDto;
 import ru.practicum.comment.mapper.CommentMapper;
@@ -13,6 +15,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CommentPublicServiceImpl implements CommentPublicService {
 
     final CommentRepository commentRepository;
@@ -31,6 +34,6 @@ public class CommentPublicServiceImpl implements CommentPublicService {
             throw new NotFoundException("Событие id = %d не найдено".formatted(eventId));
         }
         List<Comment> comments = commentRepository.findAllByEventId(eventId);
-        return CommentMapper.MapToCommentDto(comments);
+        return CommentMapper.mapToCommentDto(comments);
     }
 }

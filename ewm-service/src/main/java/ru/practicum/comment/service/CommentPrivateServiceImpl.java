@@ -38,7 +38,7 @@ public class CommentPrivateServiceImpl implements CommentPrivateService {
             throw new NotFoundException("Пользователь id = %d не найден".formatted(authorId));
         }
         List<Comment> comments = commentRepository.findAllByEventIdAndAuthorId(eventId, authorId);
-        return CommentMapper.MapToCommentDto(comments);
+        return CommentMapper.mapToCommentDto(comments);
     }
 
     @Override

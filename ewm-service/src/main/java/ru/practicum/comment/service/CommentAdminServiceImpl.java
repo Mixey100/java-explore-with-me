@@ -23,13 +23,14 @@ public class CommentAdminServiceImpl implements CommentAdminService {
     @Override
     public List<CommentDto> getAll(CommentAdminFilter commentAdminFilter, Integer from, Integer size) {
         commentAdminFilter.validateDates();
-        Specification<Comment> specification = DbCommentSpecification.getAdminSpecification(commentAdminFilter.getEventIds(),
+        Specification<Comment> specification = DbCommentSpecification.getAdminSpecification(
+                commentAdminFilter.getEventIds(),
                 commentAdminFilter.getAuthorIds(),
                 commentAdminFilter.getRangeStart(),
                 commentAdminFilter.getRangeEnd());
         Pageable pageable = PageRequest.of(from / size, size);
         List<Comment> comments = commentRepository.findAll(specification, pageable).getContent();
-        return CommentMapper.MapToCommentDto(comments);
+        return CommentMapper.mapToCommentDto(comments);
     }
 
     @Override

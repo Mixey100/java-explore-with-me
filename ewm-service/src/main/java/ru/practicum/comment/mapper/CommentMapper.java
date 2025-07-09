@@ -32,7 +32,7 @@ public class CommentMapper {
                 .build();
     }
 
-    public static List<CommentDto> MapToCommentDto(List<Comment> comments) {
+    public static List<CommentDto> mapToCommentDto(List<Comment> comments) {
         return comments.stream()
                 .map(CommentMapper::mapToCommentDto)
                 .toList();

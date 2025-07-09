@@ -29,5 +29,4 @@ public class Compilation {
     Boolean pinned;
 
     String title;
-
 }
