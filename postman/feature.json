@@ -432,7 +432,7 @@
 									"            clearInterval(interval);\r",
 									"        }\r",
 									"    },  \r",
-									"    100 \r",
+									"    1000 \r",
 									");"
 								],
 								"type": "text/javascript",
