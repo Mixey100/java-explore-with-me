@@ -481,7 +481,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{{request_body}}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/users/:userId/events/:eventId/comments",
@@ -1937,6 +1937,11 @@
 		},
 		{
 			"key": "commentId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "response",
 			"value": "",
 			"type": "string"
 		}
