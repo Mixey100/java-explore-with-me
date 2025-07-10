@@ -31,7 +31,7 @@ public class CommentPrivateServiceImpl implements CommentPrivateService {
 
     @Override
     public List<CommentDto> getAllByEventIdAndAuthorId(Long eventId, Long authorId) {
-        if (!commentRepository.existsById(eventId)) {
+        if (!eventRepository.existsById(eventId)) {
             throw new NotFoundException("Событие id = %d не найдено".formatted(eventId));
         }
         if (!userRepository.existsById(authorId)) {
